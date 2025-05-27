@@ -1,5 +1,12 @@
 services:
-  tungsten:
+  tungsten-mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./../mongodb:/mongodb
+
+  tungsten-backend:
     build: .
     ports:
       - 4370:4370
@@ -10,5 +17,4 @@ services:
       HTTPS: false
       ENABLE_USER_SIGNUP: true
     volumes:
-      - ./../auth.json:/auth.json
       - ./../test-data:/data
