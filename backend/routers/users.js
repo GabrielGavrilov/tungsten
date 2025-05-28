@@ -61,6 +61,9 @@ router.post('/register', async (req, res) => {
     });
 });
 
+/**
+ * FIX: Anyone could log in if they give a username and password, even if the user doesn't exist.
+ */
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username) return res.status(400).send('Missing username');

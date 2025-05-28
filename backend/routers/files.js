@@ -128,26 +128,51 @@ router.put('/description', async (req, res) => {
     });
 });
 
-router.put('/name', (req, res) => {
+router.put('/name', async (req, res) => {
   let { oldPath, newPath } = req.query;
+
   if (!oldPath) return res.status(400).send('Missing old file path');
   if (!newPath) return res.status(400).send('Missing new file path');
+
   oldPath = sanitizePath(oldPath);
   newPath = sanitizePath(newPath);
+
   if (!oldPath || !newPath) return res.status(400).send('Invalid file path');
   if (oldPath === newPath)
     return res.status(400).send('New path cannot be the same as old path');
+
   oldPath = path.join(req.homeDirectory, oldPath);
   newPath = path.join(req.homeDirectory, newPath);
+
   if (!fs.existsSync(oldPath)) return res.status(404).send('File not found');
   if (fs.existsSync(newPath))
     return res.status(400).send('File already exists');
+
   if (newPath.split('/').length !== oldPath.split('/').length)
     return res.status(400).send('Cannot change file structure');
-  fs.renameSync(oldPath, newPath);
-  res.status(200).send({ renamed: true, files: readData(req.homeDirectory) });
+
+  const oldFile = await File.find({ location: oldPath });
+  const updatedFile = {
+    location: newPath,
+    description: oldFile.description,
+  };
+
+  await File.findOneAndUpdate({ location: oldPath }, updatedFile)
+    .then(() => {
+      fs.renameSync(oldPath, newPath);
+      res
+        .status(200)
+        .send({ renamed: true, files: readData(req.homeDirectory) });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
 });
 
+/**
+ * TODO
+ */
 router.post('/move', (req, res) => {
   let { oldPath, newPath } = req.body;
   if (!oldPath) return res.status(400).send('Missing old file path');
@@ -168,6 +193,9 @@ router.post('/move', (req, res) => {
   res.status(200).send({ moved: true, files: readData(req.homeDirectory) });
 });
 
+/**
+ * TODO
+ */
 router.delete('/', (req, res) => {
   let { filePath } = req.query;
   if (!filePath) return res.status(400).send('Missing file path');

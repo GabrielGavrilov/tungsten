@@ -11,6 +11,7 @@ const endpoints = {
   files: {
     index: `${base}/api/files`,
     name: `${base}/api/files/name`,
+    Description: `${base}/api/files/description`,
     move: `${base}/api/files/move`,
   },
   folders: {
