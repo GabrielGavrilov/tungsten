@@ -11,7 +11,7 @@ const endpoints = {
   files: {
     index: `${base}/api/files`,
     name: `${base}/api/files/name`,
-    Description: `${base}/api/files/description`,
+    description: `${base}/api/files/description`,
     move: `${base}/api/files/move`,
   },
   folders: {
@@ -30,7 +30,7 @@ export default endpoints;
 
 export function withQueryParams(
   endpoint: string,
-  queryParams: Record<string, string>,
+  queryParams: Record<string, string>
 ): string {
   let url = endpoint;
   Object.entries(queryParams).forEach(([key, value]) => {
@@ -42,7 +42,7 @@ export function withQueryParams(
 export function withPathParams(
   endpoint: string,
   pathParams: Record<string, string>,
-  queryParams: Record<string, string>,
+  queryParams: Record<string, string>
 ): string {
   let match: RegExpExecArray | null;
   let formattedUri = endpoint;

@@ -1,4 +1,4 @@
-import { DataLeaf } from '@/providers/data/provider';
+import { useData } from '@/providers/data/provider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -15,7 +15,8 @@ import { Input } from '../ui/input';
 
 type EditDescriptionDialogProps = {
   open: boolean;
-  item: DataLeaf | null;
+  name?: string;
+  path?: string;
   onOpenChange: (open: boolean) => void;
 };
 
@@ -28,7 +29,10 @@ type FormSchema = z.infer<typeof formSchema>;
 export default function EditDescriptionDialog(
   props: EditDescriptionDialogProps
 ) {
-  const { open, item, onOpenChange } = props;
+  const { editDescription } = useData();
+  const { open, name, path, onOpenChange } = props;
+
+  console.log(path);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -43,14 +47,13 @@ export default function EditDescriptionDialog(
   }
 
   async function onSubmit(value: FormSchema) {
-    if (!item) return close();
-
+    if (!path) return;
     const { description } = value;
 
-    console.log(description);
-  }
+    await editDescription(path, description);
 
-  if (!item) return null;
+    return close();
+  }
 
   return (
     <Dialog
@@ -61,7 +64,7 @@ export default function EditDescriptionDialog(
       }}
     >
       <DialogContent>
-        <DialogTitle>Edit description for "{item.name}"</DialogTitle>
+        <DialogTitle>Edit description for "{name}"</DialogTitle>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4">
             <FormField

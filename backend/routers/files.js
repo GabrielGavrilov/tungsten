@@ -106,7 +106,11 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/description', async (req, res) => {
-  let { filePath, description } = req.body;
+  let { filePath, description } = req.query;
+
+  console.log(filePath);
+  console.log(description);
+
   filePath = path.join(req.homeDirectory, filePath);
   const oldFile = await File.find({ location: filePath });
   const updatedFile = {

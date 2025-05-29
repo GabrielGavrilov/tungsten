@@ -3,7 +3,14 @@ import { DataLeaf, DataType, useData } from '@/providers/data/provider';
 import { useEditor } from '@/providers/editor-provider';
 import { toast } from 'sonner';
 import { buttonVariants } from '../ui/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '../ui/dialog';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from '../ui/dialog';
 
 type DeleteDialogProps = {
   open: boolean;
@@ -15,14 +22,7 @@ type DeleteDialogProps = {
 };
 
 export default function DeleteDialog(props: DeleteDialogProps) {
-  const {
-    open,
-    name,
-    type,
-    path,
-    isPermanent = false,
-    onOpenChange,
-  } = props;
+  const { open, name, type, path, isPermanent = false, onOpenChange } = props;
 
   const { deleteFile, deleteDirectory, permanentlyDeleteFile } = useData();
   const { selectFile, activeFile } = useEditor();
@@ -31,12 +31,11 @@ export default function DeleteDialog(props: DeleteDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogTitle>
-          are you sure you want to{isPermanent ? ' permanently ' : ' '}delete the {type} "{name}"?
+          are you sure you want to{isPermanent ? ' permanently ' : ' '}delete
+          the {type} "{name}"?
         </DialogTitle>
         {isPermanent ? (
-          <DialogDescription>
-            this cannot be undone.
-          </DialogDescription>
+          <DialogDescription>this cannot be undone.</DialogDescription>
         ) : (
           <DialogDescription>
             you can view files you've deleted under "recently deleted."

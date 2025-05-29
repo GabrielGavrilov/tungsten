@@ -51,7 +51,7 @@ type TreeContextProps = {
     originalItem: DataLeaf;
     toDir: DataLeaf;
   }) => Promise<boolean>;
-  showEditDescriptionDialog: (item: DataLeaf) => void;
+  showEditDescriptionDialog: (props: { path: string; name: string }) => void;
   showMoveDialog: (item: DataLeaf) => void;
 };
 
@@ -80,12 +80,17 @@ export default function Tree() {
 
   const [editDescriptionDialogVisible, setEditDescriptionDialogVisible] =
     useState(false);
-  const [selectedEditDescriptionItem, setSelectedEditDescriptionItem] =
-    useState<DataLeaf | null>(null);
-  const showEditDescriptionDialog = useCallback((item: DataLeaf) => {
-    setSelectedEditDescriptionItem(item);
-    setEditDescriptionDialogVisible(true);
-  }, []);
+  const [editDescriptionItem, setSelectedEditDescriptionItem] = useState<{
+    path: string;
+    name: string;
+  } | null>(null);
+  const showEditDescriptionDialog = useCallback(
+    (props: { path: string; name: string }) => {
+      setSelectedEditDescriptionItem(props);
+      setEditDescriptionDialogVisible(true);
+    },
+    []
+  );
 
   const [moveDialogVisible, setMoveDialogVisible] = useState(false);
   const [selectedMoveItem, setSelectedMoveItem] = useState<DataLeaf | null>(
@@ -171,7 +176,7 @@ export default function Tree() {
       <EditDescriptionDialog
         open={editDescriptionDialogVisible}
         onOpenChange={setEditDescriptionDialogVisible}
-        item={selectedEditDescriptionItem}
+        {...editDescriptionItem}
       />
       <TreeContext.Provider value={value}>
         {files ? <TreeLeaf leaf={files} root /> : <div className="flex-1" />}
@@ -323,7 +328,10 @@ function TreeLeaf(props: TreeLeafProps) {
                 className="select-none"
                 onClick={(e) => {
                   e.stopPropagation();
-                  showEditDescriptionDialog(leaf);
+                  showEditDescriptionDialog({
+                    path: leaf.path,
+                    name: leaf.name,
+                  });
                 }}
               >
                 <Pencil size={16} strokeWidth={2} />
