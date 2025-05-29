@@ -32,8 +32,6 @@ export default function EditDescriptionDialog(
   const { editDescription } = useData();
   const { open, name, path, onOpenChange } = props;
 
-  console.log(path);
-
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
