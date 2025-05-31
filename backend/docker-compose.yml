@@ -17,4 +17,4 @@ services:
       HTTPS: false
       ENABLE_USER_SIGNUP: true
     volumes:
-      - ./../test-data:/data
+      - ./../data:/data

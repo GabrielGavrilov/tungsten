@@ -3,4 +3,7 @@ node_modules
 
 auth.json
 test-data
+data
+lancedb/
+rag.csv
 mongodb/
