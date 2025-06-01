@@ -76,38 +76,39 @@ def extract_context_from_rows(rows):
         ],
     )
 
-def main():
-    # await create_csv_file()
-    question = "Summarize the notes I took for the Michael Gavrilov class"
+def ask_question(question):
     generate_rag()
     rows = search_rag(question, 3)
     context = extract_context_from_rows(rows)
 
     stream = ollama.chat(
-    model="llama3.1", stream=True,
+    model="llama3.1", stream=False,
     messages = [
         # { "role": "system", 'content': SYSTEM},
         { "role": "user", 'content': f"Context: {context}"},
         { "role": "user", 'content': f"Question: {question}"}
     ]
     )
-    for chunk in stream:
-        print(chunk['message']['content'], end='', flush=True)
+    # for chunk in stream:
+    #     print(chunk['message']['content'], end='', flush=True)
+
+    return stream.message.content
 
 """
 Server controllers
 """
 
-# @app.get("/", response_model=list[FileItem])
-# async def index():
-#     return await files.find().to_list(length=None)
+@app.get("/")
+async def index(question: str):
+    return {"response": ask_question(question)}
 
-# @app.get("/rag", status_code=204)
-# async def generate_rag():
-#     await create_csv_file()
 
+@app.get("/rag", status_code=204)
+async def generate_rag():
+    await create_csv_file()
+    generate_rag()
 
 if __name__ == "__main__":
     # asyncio.run(main())
-    main()
-    # uvicorn.run(app, host="0.0.0.0", port=4371)
+    # main()
+    uvicorn.run(app, host="0.0.0.0", port=4371)

@@ -6,25 +6,30 @@ import Notebook from './pages/notebook';
 import Register from './pages/register';
 import { useAuth } from './providers/auth-provider';
 import { EditorProvider } from './providers/editor-provider';
+import Ai from './pages/ai';
 
 export default function App() {
   return (
     <Routes>
-      <Route path='/' element={<BigBoyWrapper />}>
+      <Route path="/" element={<BigBoyWrapper />}>
         {/* authentication */}
-        <Route path='login' element={<Login />} />
-        <Route path='register' element={<Register />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
 
-        <Route path=':username' element={
-          <EditorProvider>
-            <Outlet />
-          </EditorProvider>
-        }>
+        <Route
+          path=":username"
+          element={
+            <EditorProvider>
+              <Outlet />
+            </EditorProvider>
+          }
+        >
           <Route element={<Protected />}>
             <Route index element={<Notebook />} />
-            <Route path='*' element={<Notebook />} />
+            <Route path="*" element={<Notebook />} />
           </Route>
         </Route>
+        <Route path="ai" element={<Ai />} />
       </Route>
     </Routes>
   );
@@ -34,13 +39,13 @@ function Protected() {
   const { username, ready } = useAuth();
   const { username: u } = useParams();
   if (!ready) return <Loading />;
-  if (u !== username) return <Navigate to='/login' replace />;
+  if (u !== username) return <Navigate to="/login" replace />;
   return <Outlet />;
 }
 
 function BigBoyWrapper() {
   return (
-    <div className='h-screen flex flex-col'>
+    <div className="h-screen flex flex-col">
       <Navbar />
       <Outlet />
     </div>
